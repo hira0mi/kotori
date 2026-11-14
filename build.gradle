@@ -1,0 +1,32 @@
+
+plugins {
+    id 'application'
+}
+
+group = 'dev.kotori'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    implementation 'org.telegram:telegrambots-longpolling:10.3.0'
+    implementation 'org.telegram:telegrambots-client:10.3.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+}
+
+application {
+    mainClass = 'dev.kotori.Main'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
