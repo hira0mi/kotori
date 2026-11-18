@@ -11,23 +11,35 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 public class KotoriBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient client;
+    private final DialogEngine dialog;
 
     public KotoriBot(String token) {
-        this.client = new OkHttpTelegramClient(token);
+        client = new OkHttpTelegramClient(token);
+
+        dialog = new DialogEngine(
+                new QuizService(
+                        new InMemoryQuestionRepository()
+                )
+        );
     }
 
     @Override
     public void consume(Update update) {
 
-        if (!update.hasMessage()) {
+        if (!update.hasMessage()
+                || !update.getMessage().hasText()) {
             return;
         }
 
         long chatId = update.getMessage().getChatId();
 
+        String answer = dialog.handle(
+                update.getMessage().getText()
+        );
+
         SendMessage response = SendMessage.builder()
                 .chatId(chatId)
-                .text("Привет! Я Kotori. Пока я умею только отвечать на сообщения.")
+                .text(answer)
                 .build();
 
         try {
