@@ -3,19 +3,28 @@ package dev.kotori;
 
 import org.junit.jupiter.api.Test;
 import java.util.List;
-
+import dev.kotori.quiz.Question;
+import dev.kotori.quiz.QuestionRepository;
+import dev.kotori.quiz.InMemoryQuestionRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DialogEngineTest {
 
+
     private DialogEngine engine() {
+        QuestionRepository repository =
+                new InMemoryQuestionRepository(
+                        List.of(
+                                new Question("猫", "кошка"),
+                                new Question("水", "вода")
+                        )
+                );
+
         return new DialogEngine(
-                new QuizService(() -> List.of(
-                        new Question("猫", "кошка"),
-                        new Question("水", "вода")
-                ))
+                new QuizService(repository)
         );
     }
+
 
     @Test
     void startsAndShowsFirstQuestion() {
@@ -63,9 +72,13 @@ class DialogEngineTest {
 
     @Test
     void emptyRepositoryDoesNotCrash() {
+
         DialogEngine d = new DialogEngine(
-                new QuizService(List::of)
+                new QuizService(
+                        new InMemoryQuestionRepository(List.of())
+                )
         );
+
 
         assertTrue(d.handle("/start").contains("нет слов"));
     }

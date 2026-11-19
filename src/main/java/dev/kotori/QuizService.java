@@ -1,6 +1,7 @@
 
 package dev.kotori;
-
+import dev.kotori.quiz.Question;
+import dev.kotori.quiz.QuestionRepository;
 import java.util.List;
 import java.util.Objects;
 
